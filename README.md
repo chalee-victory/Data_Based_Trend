@@ -6,7 +6,8 @@
 
 - **분석 대상**: 대전 도시철도 1호선 22개 역의 월별 승하차 인원 (2015.01 ~ 2026.07, 2025년 데이터는 원본 누락)
 - **분석 목적**: 시계열 데이터에서 역별 이용객 증감 패턴을 발견하고, 사양화·부흥 역을 데이터와 실제 지역 뉴스로 대조해 인사이트를 도출한다.
-- **진행 상태**: ✅ 완료 — REPORT.md 최종본까지 작성 완료
+- **진행 상태**: ✅ 완료 — REPORT.md 최종본 + 보너스 과제(인터랙티브 대시보드 배포)까지 완료
+- **대시보드 바로가기**: [data-based-trend.vercel.app](https://data-based-trend.vercel.app)
 
 ## 2. 폴더 구조
 
@@ -21,10 +22,14 @@ Data_Based_Trend/
 │   ├── clean_data.py                     # 형식 오류 수정, 결측치/이상치 탐지·라벨링, 파생변수 생성
 │   └── analyze_and_visualize.py          # 시각화 생성 + 요약 통계 출력
 ├── images/                               # 시각화 결과 이미지 6장 (01~06)
-├── REPORT.md                             # 분석 리포트 (최종 인사이트 정리)
+├── dashboard/                             # 보너스 과제: 인터랙티브 대시보드 (Next.js)
+│   ├── app/                              # 페이지 및 전역 스타일
+│   ├── lib/insights.ts                   # 필터 조건에 따라 동적으로 계산되는 인사이트 로직
+│   └── public/data/dashboard_data.json   # 대시보드용 정적 데이터 (cleaned_daejeon_metro.csv 기반)
+├── REPORT.md                             # 분석 리포트 (최종 인사이트 + 보너스 과제 정리)
 ├── PROGRESS.md                           # 작업 진행상황 로그
 ├── WORK_ORDER.md                         # 미션 작업지시서
-├── requirements.txt                      # 의존성 목록
+├── requirements.txt                      # 의존성 목록 (분석 코드용 — 대시보드 의존성은 dashboard/package.json 참고)
 └── README.md                             # 본 파일
 ```
 
@@ -51,14 +56,29 @@ python py/analyze_and_visualize.py    # → images/*.png 생성 + 요약 통계 
 
 `REPORT.md`에 실린 이미지 중 `04_all_stations_ranking.png`, `05_all_stations_10yr_lines.png`, `06_six_stations_breakdown.png`는 22개 역 전체 비교·6개 급변 역 상세 분석 과정에서 추가 생성한 보조 시각화이며, 동일한 정제 데이터(`data/cleaned_daejeon_metro.csv`)를 기반으로 한다.
 
-## 5. 데이터 출처
+## 5. 대시보드 (보너스 과제)
+
+분석 결과를 기간·역·지표 조건을 바꿔가며 탐색할 수 있는 인터랙티브 대시보드를 별도로 구축·배포했다.
+
+- **배포 URL**: https://data-based-trend.vercel.app
+- **기술 스택**: Next.js · TypeScript · Tailwind CSS · shadcn/ui · Recharts
+- **로컬 실행**:
+  ```bash
+  cd dashboard
+  npm install
+  npm run dev   # localhost:3000
+  ```
+
+자세한 기능 설명과 체험 시나리오는 [`REPORT.md`의 "9. 보너스 과제" 섹션](./REPORT.md#9-보너스-과제-대시보드-서비스화)을 참고한다.
+
+## 6. 데이터 출처
 
 - **출처**: 대전교통공사 역별 수송실적 (연도별 CSV, 공공 제공 자료)
 - **기간**: 2015년 1월 ~ 2026년 7월 (2025년 데이터는 원본 자료에 통째로 누락되어 있음 — 2024년 12월 다음이 2026년 1월로 바로 이어짐)
 - **대상**: 대전 도시철도 1호선 전체 22개 역
 - **라이선스 주의사항**: 공공기관 제공 통계 자료로, 원본 CSV는 `data/raw/`에 그대로 포함되어 있다. 재배포 시 대전교통공사의 공공데이터 이용 조건을 따른다.
 
-## 6. 분석 리포트
+## 7. 분석 리포트
 
 분석 주제, 질문, 데이터 설명, 시각화, 인사이트(5개), 결론/한계점, AI 사용 로그는 [`REPORT.md`](./REPORT.md)에서 확인할 수 있습니다.
 
