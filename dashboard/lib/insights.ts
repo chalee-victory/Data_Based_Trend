@@ -4,10 +4,11 @@ export type InsightRecord = {
   total: number;
   ma3: number | null;
   residual: number | null;
+  seasonal: number | null;
   periodLabel: string;
 };
 
-export type InsightMetric = "total" | "ma3" | "ma12" | "yoyPct" | "residual";
+export type InsightMetric = "total" | "ma3" | "ma12" | "yoyPct" | "residual" | "seasonal";
 export type InsightItem = { label: string; text: string; tone: "accent" | "positive" | "neutral" | "warning" };
 
 const monthValue = (date: string) => new Date(`${date}-01`).getTime();
@@ -82,6 +83,22 @@ export function buildInsights({ records, selectedStations, metric, showPandemic,
   if (metric === "residual" || selectedStations.length === 1) {
     const residual = average(primary.map((record) => record.residual).filter((value): value is number => value != null));
     if (residual != null) insights.push({ label: "시스템 평균 대비", text: `${primaryStation}역은 이 기간 동안 22개 역 평균보다 ${percentPoint(residual)} 더 좋은 흐름을 보였습니다.`, tone: residual >= 0 ? "positive" : "accent" });
+  }
+
+  if (metric === "seasonal" && selectedStations.length === 1 && primary.length >= 12) {
+    const byMonth = new Map<number, number[]>();
+    primary.forEach((record) => {
+      const monthValueOf = record.seasonal;
+      if (monthValueOf == null) return;
+      const monthNumber = Number(record.date.slice(5, 7));
+      byMonth.set(monthNumber, [...(byMonth.get(monthNumber) ?? []), monthValueOf]);
+    });
+    const monthAverages = [...byMonth.entries()].map(([monthNumber, values]) => ({ monthNumber, avg: average(values) ?? 0 })).sort((a, b) => a.avg - b.avg);
+    if (monthAverages.length >= 2) {
+      const lowest = monthAverages[0];
+      const highest = monthAverages.at(-1)!;
+      insights.push({ label: "계절 패턴", text: `${primaryStation}역은 ${lowest.monthNumber}월에 평년 대비 평균 ${Math.round(lowest.avg).toLocaleString("ko-KR")}명으로 가장 낮고, ${highest.monthNumber}월에 ${Math.round(highest.avg).toLocaleString("ko-KR")}명으로 가장 높습니다.`, tone: "neutral" });
+    }
   }
 
   if (selectedStations.length === 1 && showPandemic) {

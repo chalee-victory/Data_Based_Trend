@@ -20,17 +20,17 @@ import { buildInsights, type InsightRecord } from "../lib/insights";
 type RecordItem = {
   station: string; stationCode: number; date: string; boarding: number; alighting: number;
   total: number; ma3: number | null; ma12: number | null; momPct: number | null;
-  yoyPct: number | null; residual: number | null; isOutlier: boolean; isDataGap: boolean; periodLabel: string;
+  yoyPct: number | null; residual: number | null; seasonal: number | null; isOutlier: boolean; isDataGap: boolean; periodLabel: string;
 };
 type DashboardData = { generatedAt: string; source: string; stations: { name: string; code: number }[]; records: RecordItem[] };
-type Metric = "total" | "ma3" | "ma12" | "yoyPct" | "residual";
+type Metric = "total" | "ma3" | "ma12" | "yoyPct" | "residual" | "seasonal";
 
 const DEFAULT_STATIONS = ["중앙로", "월드컵경기장", "판암", "대동", "갑천", "유성온천"];
 const COLORS = ["#e4572e", "#2a6f97", "#e3a008", "#4c956c", "#8b5cf6", "#d1495b", "#1d7874", "#6b7280"];
 const metricOptions: { value: Metric; label: string; unit: string }[] = [
   { value: "total", label: "원자료", unit: "명" }, { value: "ma3", label: "3개월 평균", unit: "명" },
   { value: "ma12", label: "12개월 평균", unit: "명" }, { value: "yoyPct", label: "YoY 증감률", unit: "%" },
-  { value: "residual", label: "시스템 대비 잔차", unit: "%p" },
+  { value: "residual", label: "시스템 대비 잔차", unit: "%p" }, { value: "seasonal", label: "계절성", unit: "명" },
 ];
 
 const formatNumber = (value: number | null | undefined) => value == null ? "-" : new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 }).format(value);
