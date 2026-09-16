@@ -20,7 +20,8 @@ Data_Based_Trend/
 ├── py/
 │   ├── merge_data.py                     # 원본 CSV 병합 및 구조 변환
 │   ├── clean_data.py                     # 형식 오류 수정, 결측치/이상치 탐지·라벨링, 파생변수 생성
-│   └── analyze_and_visualize.py          # 시각화 생성 + 요약 통계 출력
+│   ├── analyze_and_visualize.py          # 시각화 생성 + 요약 통계 출력
+│   └── generate_dashboard_seasonal.py    # STL로 역별 계절성 계산 → dashboard_data.json에 병합
 ├── images/                               # 시각화 결과 이미지 6장 (01~06)
 ├── dashboard/                             # 보너스 과제: 인터랙티브 대시보드 (Next.js)
 │   ├── app/                              # 페이지 및 전역 스타일
@@ -52,6 +53,7 @@ pip install -r requirements.txt
 python py/merge_data.py               # data/raw/*.csv → data/raw_daejeon_metro_merged.csv
 python py/clean_data.py               # → data/cleaned_daejeon_metro.csv (정제 + 파생변수)
 python py/analyze_and_visualize.py    # → images/*.png 생성 + 요약 통계 콘솔 출력
+python py/generate_dashboard_seasonal.py  # → dashboard_data.json에 계절성(STL) 필드 추가 (대시보드용)
 ```
 
 `REPORT.md`에 실린 이미지 중 `04_all_stations_ranking.png`, `05_all_stations_10yr_lines.png`, `06_six_stations_breakdown.png`는 22개 역 전체 비교·6개 급변 역 상세 분석 과정에서 추가 생성한 보조 시각화이며, 동일한 정제 데이터(`data/cleaned_daejeon_metro.csv`)를 기반으로 한다.
